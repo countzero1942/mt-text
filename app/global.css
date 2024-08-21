@@ -1,0 +1,54 @@
+@import "@mantine/core/styles/global.css";
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	--mantine-h1-font-size: rem(3rem);
+	--mantine-h2-font-size: rem(2.5rem);
+	--mantine-h1-line-height: 1;
+	--mantine-h2-line-height: 1.2;
+}
+
+article {
+	margin: 20px;
+}
+
+h1 {
+	--h1-color: var(--mantine-color-orange-7);
+	font-family: var(--mantine-font-family-headings);
+	font-size: var(--mantine-h1-font-size);
+	line-height: var(--mantine-h1-line-height);
+	font-weight: var(--mantine-h1-font-weight);
+	color: var(--h1-color);
+	text-shadow: 4px 4px 10px
+		color-mix(in srgb, black 50%, var(--h1-color));
+	-webkit-text-stroke: 1px
+		color-mix(in srgb, black 100%, var(--h1-color));
+	/* paint-order: stroke fill; */
+}
+
+h2 {
+	--h2-color: var(--mantine-color-cyan-6);
+	font-family: var(--mantine-font-family-headings);
+	font-size: var(--mantine-h2-font-size);
+	line-height: var(--mantine-h2-line-height);
+	font-weight: var(--mantine-h2-font-weight);
+	font-weight: 700;
+	color: var(--h2-color);
+	text-shadow: 6px 6px 10px
+		color-mix(in srgb, black 50%, var(--h2-color));
+	-webkit-text-stroke: 1px
+		color-mix(in srgb, white 50%, var(--h2-color));
+	/* paint-order: stroke fill; */
+}
+
+p {
+	font-family: var(--mantine-font-family);
+	font-size: 1.5rem;
+	font-weight: 500;
+	color: hsl(330, 100%, 67%);
+	text-shadow: 3px 3px hsl(241, 100%, 50%);
+	-webkit-text-stroke: 1px hsla(330, 100%, 90%, 0.8);
+}

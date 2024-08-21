@@ -1,0 +1,46 @@
+$static-font-size: calc(16px * 3.5); /* 16px = 1rem */
+
+.text {
+	--dyn-font-size: calc(16px * 3.5);
+	--shadow: color-mix(
+		in srgb,
+		transparent 55%,
+		hsl(206, 100%, 50%)
+	);
+	margin: 40px;
+	text-align: center;
+	margin-inline: auto;
+	width: fit-content;
+	background-color: var(--mantine-color-grape-7);
+	color: white;
+	border: 2px solid var(--mantine-color-grape-3);
+	border-radius: 20px;
+	padding-inline: 50px;
+	box-shadow: 15px 15px 25px var(--shadow);
+	text-shadow: 2px 2px 5px black;
+}
+
+.text1 {
+	font-size: $static-font-size;
+}
+
+.text2 {
+	font-size: rem($static-font-size);
+}
+
+.text3 {
+	font-size: var(--dyn-font-size);
+}
+
+.text4 {
+	font-size: calc(--dyn-font-size * 1.5);
+}
+
+.text5 {
+	font-size: rem(--dyn-font-size);
+}
+
+.text6 {
+	font-size: $static-font-size;
+	width: calc(100% - 200px);
+}

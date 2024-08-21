@@ -1,0 +1,15 @@
+.grid {
+	box-sizing: border-box;
+	padding: 20px;
+	border: 2px solid var(--mantine-color-grape-3);
+	height: 200px;
+}
+
+.grid > div {
+	background-color: var(--mantine-color-grape-7);
+	text-align: center;
+}
+
+.box {
+	background-color: var(--mantine-color-grape-7);
+}

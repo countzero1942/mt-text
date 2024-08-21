@@ -1,0 +1,13 @@
+body {
+	--mantine-h2-font-size: calc(1.625rem * var(--mantine-scale));
+	--mantine-h2-font-size: calc(2rem * var(--mantine-scale));
+	--mantine-h2-font-size: rem(2rem);
+	color: var(--mantine-color-cyan-6);	
+}
+
+h2 {	
+	font-size: var(--mantine-h2-font-size);
+	line-height: var(--mantine-h2-line-height);
+	font-weight: var(--mantine-h2-font-weight);
+	color: var(--mantine-color-blue-7);
+}

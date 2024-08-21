@@ -1,0 +1,11 @@
+.border {
+	--blue: var(--mantine-color-blue-8);
+	color: var(--blue);
+	background-color: var(--mantine-color-pink-3);
+	border: 2px solid var(--blue);
+	border-radius: 15px;
+	padding: 15px;
+	width: fit-content;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}

@@ -1,0 +1,61 @@
+.border {
+	border-radius: 3vmin;
+	box-sizing: border-box;
+}
+
+.box {
+	box-sizing: border-box;
+	margin-block: rem(25px);
+	margin-inline: auto;
+	text-align: center;
+	color: white;
+
+	background-color: var(--mantine-color-blue-7);
+	padding-block: rem(10px);
+	font-size: 0.75rem;
+	padding-inline: auto;
+	width: rem(200px);
+	border: 2px solid var(--mantine-color-blue-3);
+	border-radius: 10px;
+
+	@media (min-width: $mantine-breakpoint-xs) {
+		background-color: var(--mantine-color-red-7);
+		padding-block: rem(15px);
+		font-size: 1rem;
+		width: rem(250px);
+		border: 2px solid var(--mantine-color-red-3);
+		border-radius: 15px;
+	}
+	@media (min-width: $mantine-breakpoint-sm) {
+		background-color: var(--mantine-color-green-7);
+		padding-block: rem(20px);
+		font-size: 1.5rem;
+		width: rem(300px);
+		border: 3px solid var(--mantine-color-green-3);
+		border-radius: 20px;
+	}
+	@media (min-width: $mantine-breakpoint-md) {
+		background-color: var(--mantine-color-orange-7);
+		padding-block: rem(25px);
+		font-size: 2rem;
+		width: rem(400px);
+		border: 3px solid var(--mantine-color-orange-3);
+		border-radius: 25px;
+	}
+	@media (min-width: $mantine-breakpoint-lg) {
+		background-color: var(--mantine-color-grape-7);
+		padding-block: rem(30px);
+		font-size: 2.5rem;
+		width: rem(500px);
+		border: 4px solid var(--mantine-color-grape-3);
+		border-radius: 30px;
+	}
+	@media (min-width: $mantine-breakpoint-xl) {
+		background-color: var(--mantine-color-cyan-7);
+		padding-block: rem(40px);
+		font-size: 3rem;
+		width: rem(600px);
+		border: 5px solid var(--mantine-color-cyan-3);
+		border-radius: 35px;
+	}
+}
