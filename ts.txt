@@ -1,0 +1,25 @@
+export async function buildObject() {
+	await new Promise((resolve) => setTimeout(resolve, 1));
+
+	interface DynamicObject {
+		[key: string]: any;
+	}
+
+	var obj: DynamicObject = {};
+
+	obj.a = 42;
+	obj.b = "a string";
+	obj.c = {} as DynamicObject;
+	obj.c.ca = 77;
+	obj.c.cb = "foobar";
+	obj["kebab-case"] = "kebab";
+
+	logh("Build Object");
+
+	log(obj);
+
+	logh("How undefined keys are handled");
+	log(
+		`Undefined keys: obj.u = ${obj.u}, obj[u2] = ${obj["u2"]} `
+	);
+}

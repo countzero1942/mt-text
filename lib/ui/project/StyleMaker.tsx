@@ -3,12 +3,12 @@ import { ColorPicker, Slider } from "@mantine/core";
 import css from "./StyleMaker.module.css";
 import { useThrottledState } from "@mantine/hooks";
 import React, { useState } from "react";
+import InlineColorPicker from "./InlineColorPicker";
+import DropDownColorPicker from "./DropDownColorPicker";
 
 export default function StyleMaker() {
 	const [h1FontSize, setH1FontSize] = useState(3);
-	const [h1Color, setH1Color] = useState(
-		"hsla(0, 100%, 50%, 1)"
-	);
+	const [h1Color, setH1Color] = useState("#00FF00");
 	return (
 		<article className={css.grid}>
 			<header>
@@ -59,9 +59,11 @@ export default function StyleMaker() {
 					label={(value) => value.toFixed(3)}
 					onChange={(event) => setH1FontSize(event)}
 				/>
-				<p>Value: {h1Color}</p>
-				<ColorPicker
-					format="hsla"
+				<DropDownColorPicker
+					aria-label="H1 heading label"
+					hueLabel="Hue"
+					value={h1Color}
+					format="rgba"
 					onChange={setH1Color}
 				/>
 			</nav>
