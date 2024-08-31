@@ -8,6 +8,8 @@ import "prismjs/components/prism-typescript";
 // @ts-ignore
 import "prismjs/components/prism-regex";
 // @ts-ignore
+import "prismjs/components/prism-json";
+// @ts-ignore
 // import "prismjs/components/prism-tsx";
 
 export default function PrismLoader() {

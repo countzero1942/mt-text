@@ -1,13 +1,5 @@
 "use server";
-
-const log = (...data: any) => console.log(...data);
-const logh = (header: string) => {
-	log("");
-	const line = "-".repeat(header.length);
-	log(line);
-	log(header);
-	log(line);
-};
+import { log, logh } from "@/actions/utils/log";
 
 export async function printObject() {
 	await new Promise((resolve) => setTimeout(resolve, 1));

@@ -1,16 +1,20 @@
 "use server";
 
-import * as fs from "fs";
+import { readText } from "@/actions/utils/file";
+
+interface FSError {
+	message: string;
+	errno: number;
+	code: string;
+	syscall: string;
+	path: string;
+}
 
 export async function getTsCode(): Promise<string> {
-	try {
-		const txt = await fs.promises.readFile(
-			"./text/ts.txt",
-			"utf8"
-		);
-		return txt;
-	} catch (err) {
-		console.log(err);
-		return "error";
+	const res = await readText("./text/ts.txt");
+	if (typeof res === "string") {
+		return res;
+	} else {
+		return res.message;
 	}
 }
