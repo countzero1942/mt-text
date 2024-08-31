@@ -60,7 +60,7 @@ export async function buildObject() {
 
 	logh("How undefined keys are handled");
 	log(
-		`Undefined keys: obj.u = ${obj.u}, obj[u2] = ${obj["u2"]} `
+		`Undefined keys: obj.u = ${obj.u}, obj["u2"] = ${obj["u2"]} `
 	);
 }
 

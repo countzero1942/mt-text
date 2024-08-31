@@ -5,8 +5,8 @@
 }
 
 body {
-	--mantine-h1-font-size: rem(3rem);
-	--mantine-h2-font-size: rem(2.5rem);
+	--mantine-h1-font-size: rem(2.5rem);
+	--mantine-h2-font-size: rem(1.75rem);
 	--mantine-h1-line-height: 1;
 	--mantine-h2-line-height: 1.2;
 }
