@@ -1,7 +1,7 @@
 "use server";
 
 import { readFile } from "node:fs/promises";
-import { log, logh, logln } from "@/actions/utils/log";
+import { log, logh, logln } from "@/utils/log";
 
 export interface FSError {
 	message: string;

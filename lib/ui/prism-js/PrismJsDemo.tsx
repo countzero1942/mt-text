@@ -6,8 +6,8 @@ import {
 	demoReadTextError,
 	demoReadTextSuccess,
 } from "@/actions/utils/file";
-import { log, logh, logln } from "@/actions/utils/log";
-import { toJavascriptString } from "@/actions/utils/prettify";
+import { log, logh, logln } from "@/utils/log";
+import JS from "@/utils/js";
 
 const myJSObj = {
 	foo: 23,
@@ -30,16 +30,13 @@ const myJSObj = {
 };
 
 const tabSize = 4;
-const myJSObjStrSpaces = toJavascriptString(
-	myJSObj,
+const myJSObjStrSpaces = JS.stringify(myJSObj, {
 	tabSize,
-	false
-);
-const myJSObjStrTabs = toJavascriptString(
-	myJSObj,
-	tabSize,
-	true
-);
+	toTabs: false,
+});
+const myJSObjStrTabs = JS.stringify(myJSObj, {
+	toTabs: true,
+});
 
 export default async function PrismJSDemo() {
 	const ts = await getTsCode();
@@ -50,7 +47,7 @@ export default async function PrismJSDemo() {
 	const str = await demoReadTextSuccess();
 	logh("PrismJSDemo");
 	log(str);
-	const errStr = toJavascriptString(err);
+	const errStr = JS.stringify(err);
 	return (
 		<article>
 			<h2>Err Json.stringify()</h2>
@@ -59,7 +56,7 @@ export default async function PrismJSDemo() {
 					{JSON.stringify(err, null, 3)}
 				</code>
 			</pre>
-			<h2>Err toJavascriptString()</h2>
+			<h2>Err JS.stringify()</h2>
 			<pre className="language-js">
 				<code className="language-js">{errStr}</code>
 			</pre>

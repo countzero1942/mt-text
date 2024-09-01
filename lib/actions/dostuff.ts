@@ -1,5 +1,5 @@
 "use server";
-import { log, logh } from "@/actions/utils/log";
+import { log, logh } from "@/utils/log";
 
 export async function printObject() {
 	await new Promise((resolve) => setTimeout(resolve, 1));
