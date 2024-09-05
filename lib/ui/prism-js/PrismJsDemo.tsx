@@ -1,12 +1,7 @@
 import React from "react";
 import PrismLoader from "./PrismLoader";
 import { getTsCode } from "@/actions/text-server";
-import {
-	demoReadFileError,
-	demoReadTextError,
-	demoReadTextSuccess,
-} from "@/actions/utils/file";
-import { log, logh, logln } from "@/utils/log";
+import { demoReadFileError } from "@/actions/utils/file";
 import JS from "@/utils/js";
 
 const myJSObj = {
@@ -39,15 +34,8 @@ const myJSObjStrTabs = JS.stringify(myJSObj, {
 });
 
 export default async function PrismJSDemo() {
-	const ts = await getTsCode();
 	const err = await demoReadFileError();
-	const res = await demoReadTextError();
-	logh("PrismJSDemo");
-	log(res);
-	const str = await demoReadTextSuccess();
-	logh("PrismJSDemo");
-	log(str);
-	const errStr = JS.stringify(err);
+	const ts = await getTsCode();
 	return (
 		<article>
 			<h2>Err Json.stringify()</h2>
@@ -58,7 +46,9 @@ export default async function PrismJSDemo() {
 			</pre>
 			<h2>Err JS.stringify()</h2>
 			<pre className="language-js">
-				<code className="language-js">{errStr}</code>
+				<code className="language-js">
+					{JS.stringify(err, { toTabs: true })}
+				</code>
 			</pre>
 			<h2>myJSObjStrSpaces</h2>
 			<pre className="language-js">

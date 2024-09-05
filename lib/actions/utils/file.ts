@@ -4,12 +4,19 @@ import { readFile } from "node:fs/promises";
 import { log, logh, logln } from "@/utils/log";
 
 export interface FSError {
+	name: string;
 	message: string;
 	errno: number;
 	code: string;
 	syscall: string;
 	path: string;
 }
+
+const errToFSError = (err: any) => {
+	// @ts-ignore
+	const e: FSError = { message: err.message, ...err };
+	return e;
+};
 
 export async function readText(
 	path: string
@@ -20,9 +27,7 @@ export async function readText(
 		});
 		return txt;
 	} catch (err) {
-		// @ts-ignore
-		const e: FSError = { message: err.message, ...err };
-		return e;
+		return errToFSError(err);
 	}
 }
 
@@ -33,12 +38,12 @@ export async function demoReadFileError(): Promise<FSError> {
 		});
 		return {} as FSError;
 	} catch (err) {
-		// @ts-ignore
-		const e: FSError = { message: err.message, ...err };
+		const e = errToFSError(err);
 
 		logh("Demo readFile Error");
 		log(err);
 		logln();
+		log("error name: ", e.name);
 		log("error message: ", e.message);
 		log("error number:", e.errno);
 		log("error code:", e.code);

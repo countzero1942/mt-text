@@ -1,13 +1,6 @@
 import { log, logh } from "@/utils/log";
 import memoizee from "memoizee";
 
-export const getTabIndentString2 = (
-	numOfTabs: number
-): string => {
-	log(`--> Get tab string of size: ${numOfTabs}`);
-	return "\t".repeat(numOfTabs);
-};
-
 export const getTabIndentString = memoizee(
 	(numOfTabs: number): string => {
 		log(`--> Get tab string of size: ${numOfTabs}`);
