@@ -1,69 +1,11 @@
 import { log, logh, logln } from "@/utils/log";
-
-const getPrototype = (item: any) => {
-	return Object.prototype.toString.call(item).slice(8, -1);
-};
-
-export type getTypeReturn =
-	| "Number"
-	| "String"
-	| "Boolean"
-	| "Undefined"
-	| "Null"
-	| "RegEx"
-	| "Array"
-	| "Function"
-	| "Object"
-	| "Class";
-
-const getType = (item: any): getTypeReturn => {
-	if (item === null) {
-		return "Null";
-	}
-	if (typeof item === "undefined") {
-		return "Undefined";
-	}
-	const prototype: getTypeReturn = getPrototype(
-		item
-	) as getTypeReturn;
-	if (prototype === "Object") {
-		if (item.constructor.name === "Object") {
-			return "Object";
-		}
-		return "Class";
-	}
-	return prototype;
-};
-
-const getType2 = (
-	item: any
-):
-	| "Number"
-	| "String"
-	| "Boolean"
-	| "Undefined"
-	| "Null"
-	| "RegEx"
-	| "Array"
-	| "Function"
-	| "Object"
-	| "Class" => {
-	if (item === null) {
-		return "Null";
-	}
-	if (typeof item === "undefined") {
-		return "Undefined";
-	}
-	const prototype: getTypeReturn = getPrototype(
-		item
-	) as getTypeReturn;
-	if (prototype === "Object") {
-		if (item.constructor?.name) {
-			return "Class";
-		}
-	}
-	return prototype;
-};
+import {
+	compareTypeAndClassName,
+	getErrorMessage,
+	getType,
+	isTypeAndClassNameMatch,
+	isTypeMatch,
+} from "@/utils/types";
 
 class Animal {
 	kind: string;
@@ -100,65 +42,6 @@ class Dog extends Animal {
 	}
 }
 
-const logEntity = (x: any) => {
-	const tx = getType(x);
-	if (tx !== "Function") {
-		log(x);
-	} else {
-		log(`${x}`);
-	}
-	logln(10);
-	if (x && x.name) {
-		log(`Name: ${x.name}`);
-	}
-	log(`Type: ${tx}`);
-	logln(40);
-};
-
-export const logEntityTypes = () => {
-	logh("Get Entity Types");
-	const x1 = 23;
-	logEntity(x1);
-	const x2 = "abc";
-	logEntity(x2);
-	const x3 = true;
-	logEntity(x3);
-	const x4 = undefined;
-	logEntity(x4);
-	const x5 = null;
-	logEntity(x5);
-	const x6 = /\w+/gmu;
-	logEntity(x6);
-	const x7 = [1, 2, 3];
-	logEntity(x7);
-	const x8 = 1234567890123456789012345n;
-	logEntity(x8);
-
-	const x10 = () => {
-		return "stuff";
-	};
-	logEntity(x10);
-	function x11() {
-		return "stuff2";
-	}
-	logEntity(x11);
-
-	const x20 = {
-		a: "a string",
-		b: 42,
-		c: {
-			x: 2.81,
-			y: true,
-		},
-	};
-	logEntity(x20);
-
-	const x30 = new Animal("Cat");
-	logEntity(x30);
-	const x31 = new Dog("Mutt");
-	logEntity(x31);
-};
-
 const getTypeString = (
 	tx: string,
 	x: any,
@@ -168,22 +51,57 @@ const getTypeString = (
 	return `x: ${tx} = ${x}, y: ${ty} = ${y}`;
 };
 
+const resolveTypes = (
+	x: any,
+	y: any
+): {
+	isTypeAndClassNameMatch: boolean;
+	typeMismatchErrorMessage?: string;
+} => {
+	const info = compareTypeAndClassName(x, y);
+	const {
+		isTypeAndClassNameMatch,
+		isTypeMatch,
+		typeA,
+		typeB,
+		isClassNameMatch,
+		classNameA,
+		classNameB,
+	} = info;
+	log(info);
+	if (isTypeAndClassNameMatch) {
+		return {
+			isTypeAndClassNameMatch,
+		};
+	}
+	if (isTypeMatch) {
+		const typeMismatchErrorMessage =
+			`Type x: "Class:${classNameA}" !== ` +
+			`Type y: "Class:${classNameB}"`;
+		return {
+			isTypeAndClassNameMatch,
+			typeMismatchErrorMessage,
+		};
+	}
+	const typeMismatchErrorMessage =
+		`Type x: "${typeA}" !== ` + `Type y: "${typeB}"`;
+	return {
+		isTypeAndClassNameMatch,
+		typeMismatchErrorMessage,
+	};
+};
+
 export const add = (x: any, y: any) =>
 	new Promise<any>((resolve, reject) => {
-		const tx = getType(x);
-		const ty = getType(y);
-		if (tx !== ty) {
-			reject(
-				Error(
-					`Type mismatch: ${getTypeString(
-						tx,
-						x,
-						ty,
-						y
-					)}`
-				)
-			);
+		const {
+			isTypeAndClassNameMatch,
+			typeMismatchErrorMessage,
+		} = resolveTypes(x, y);
+
+		if (!isTypeAndClassNameMatch) {
+			reject(TypeError(typeMismatchErrorMessage));
 		}
+
 		const sum = x + y;
 		if (sum) {
 			resolve(sum);
@@ -194,20 +112,15 @@ export const add = (x: any, y: any) =>
 
 export const subtract = (x: any, y: any) =>
 	new Promise<any>((resolve, reject) => {
-		const tx = getType(x);
-		const ty = getType(y);
-		if (tx !== ty) {
-			reject(
-				Error(
-					`Type mismatch: ${getTypeString(
-						tx,
-						x,
-						ty,
-						y
-					)}`
-				)
-			);
+		const {
+			isTypeAndClassNameMatch,
+			typeMismatchErrorMessage,
+		} = resolveTypes(x, y);
+
+		if (!isTypeAndClassNameMatch) {
+			reject(TypeError(typeMismatchErrorMessage));
 		}
+
 		const sum = x - y;
 		if (sum) {
 			resolve(sum);
@@ -217,46 +130,49 @@ export const subtract = (x: any, y: any) =>
 	});
 
 export const addSuccess1 = async () => {
+	logh("addSuccess1");
 	try {
 		const x = 2;
 		const y = 3;
 		const sum = await add(x, y);
 		log(`add(${x}, ${y}) = ${sum}`);
 	} catch (error) {
-		if (error instanceof Error) {
-			log("Error: ", error.message);
-		} else {
-			log(error);
-		}
+		log(getErrorMessage(error as Error));
+	}
+};
+
+export const addSuccess2 = async () => {
+	logh("addSuccess2");
+	try {
+		const x = "abc";
+		const y = "def";
+		const sum = await add(x, y);
+		log(`add(${x}, ${y}) = ${sum}`);
+	} catch (error) {
+		log(getErrorMessage(error as Error));
 	}
 };
 
 export const addFail1 = async () => {
+	logh("addFail1");
 	try {
 		const x = 2;
 		const y = "abc";
 		const sum = await add(x, y);
 		log(`add(${x}, ${y}) = ${sum}`);
 	} catch (error) {
-		if (error instanceof Error) {
-			log("Error:", error.message);
-		} else {
-			log(error);
-		}
+		log(getErrorMessage(error as Error));
 	}
 };
 
 export const addFail2 = async () => {
+	logh("addFail2");
 	try {
 		const x = new Animal("cat");
 		const y = new Dog("mutt");
 		const sum = await add(x, y);
 		log(`add(${x}, ${y}) = ${sum}`);
 	} catch (error) {
-		if (error instanceof Error) {
-			log("Error:", error.message);
-		} else {
-			log(error);
-		}
+		log(getErrorMessage(error as Error));
 	}
 };
