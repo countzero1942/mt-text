@@ -2,9 +2,6 @@ import { log, logh, logln } from "@/utils/log";
 import {
 	compareTypeAndClassName,
 	getErrorMessage,
-	getType,
-	isTypeAndClassNameMatch,
-	isTypeMatch,
 } from "@/utils/types";
 
 class Animal {
@@ -42,15 +39,14 @@ class Dog extends Animal {
 	}
 }
 
-const getTypeString = (
-	tx: string,
-	x: any,
-	ty: string,
-	y: any
-) => {
-	return `x: ${tx} = ${x}, y: ${ty} = ${y}`;
-};
-
+/**
+ * Here we resolve Types to be compared and
+ * return Type Error msg on mismatch.
+ *
+ * @param x
+ * @param y
+ * @returns
+ */
 const resolveTypes = (
 	x: any,
 	y: any
@@ -69,11 +65,13 @@ const resolveTypes = (
 		classNameB,
 	} = info;
 	log(info);
+	// everthing good
 	if (isTypeAndClassNameMatch) {
 		return {
 			isTypeAndClassNameMatch,
 		};
 	}
+	// type match of "Class", class name mismatch
 	if (isTypeMatch) {
 		const typeMismatchErrorMessage =
 			`Type x: "Class:${classNameA}" !== ` +
@@ -83,6 +81,7 @@ const resolveTypes = (
 			typeMismatchErrorMessage,
 		};
 	}
+	// type mismatch
 	const typeMismatchErrorMessage =
 		`Type x: "${typeA}" !== ` + `Type y: "${typeB}"`;
 	return {
@@ -91,6 +90,13 @@ const resolveTypes = (
 	};
 };
 
+/**
+ * Our 'add' async function
+ *
+ * @param x
+ * @param y
+ * @returns
+ */
 export const add = (x: any, y: any) =>
 	new Promise<any>((resolve, reject) => {
 		const {
@@ -110,6 +116,13 @@ export const add = (x: any, y: any) =>
 		}
 	});
 
+/**
+ * Our 'subtract' async function.
+ *
+ * @param x
+ * @param y
+ * @returns
+ */
 export const subtract = (x: any, y: any) =>
 	new Promise<any>((resolve, reject) => {
 		const {
