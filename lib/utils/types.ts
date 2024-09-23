@@ -7,8 +7,7 @@ const getPrototype = (item: any) => {
  * @param item The Class object to retrieve Class name from
  * @returns The Class Name
  */
-export const getClassName = (item: Object) =>
-	item.constructor.name;
+export const getClassName = (item: Object) => item.constructor.name;
 
 /**
  * Puts together the Error.name and Error.message
@@ -48,8 +47,9 @@ export const getType = (
 	if (typeof item === "undefined") {
 		return "Undefined";
 	}
-	const prototype: ReturnType<typeof getType> =
-		getPrototype(item) as ReturnType<typeof getType>;
+	const prototype: ReturnType<typeof getType> = getPrototype(
+		item
+	) as ReturnType<typeof getType>;
 	if (
 		prototype === "Object" &&
 		getClassName(item as Object) != "Object"
@@ -141,4 +141,8 @@ export const compareTypeAndClassName = (
 		typeA,
 		typeB,
 	};
+};
+
+export const isDefined = <T>(obj: T | undefined): obj is T => {
+	return obj !== undefined;
 };

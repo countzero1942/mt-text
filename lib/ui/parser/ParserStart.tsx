@@ -10,13 +10,15 @@ import {
 	addSuccess2,
 } from "@/actions/promise-stuff";
 import { resolve } from "path";
-import { testLogAreaOfShapes } from "@/actions/type-fun/get-type-of-things";
+import { testNoInfer } from "@/actions/type-fun/get-type-of-things";
+import { testGetKeysAndValuesWithFuncs } from "@/actions/type-fun/one-of-interface";
 
 export default async function ParserStart() {
 	//	await logParserLines();
-	// await logSplitHeads();
-	testLogAreaOfShapes();
+	await logSplitHeads();
 	//	await new Promise((resolve) => setTimeout(resolve, 100));
+	// testGetKeysAndValuesWithFuncs();
+
 	return (
 		<article>
 			<h2>Parser Start</h2>

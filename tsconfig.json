@@ -26,7 +26,8 @@
 			"@/ui/*": ["lib/ui/*"],
 			"@/actions/*": ["lib/actions/*"],
 			"@/utils/*": ["lib/utils/*"],
-			"@/themes/*": ["lib/themes/*"]
+			"@/themes/*": ["lib/themes/*"],
+			"@/types/*": ["lib/types/*"]
 		}
 	},
 	"include": [
