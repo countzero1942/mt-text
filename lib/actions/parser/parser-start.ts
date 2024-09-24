@@ -1,6 +1,7 @@
 "use server";
 
 import { logh, logln } from "@/utils/log";
+import { countOccurencesOf } from "@/utils/string";
 import { isDefined } from "@/utils/types";
 import RenderFromTemplateContext from "next/dist/client/components/render-from-template-context";
 import { log } from "node:console";
@@ -118,11 +119,19 @@ const setLineColumn = (
 	};
 };
 
+const formatLine = (line: string) => {
+	return line
+		.replaceAll("\t", "\\t")
+		.replaceAll("\r", "\\r")
+		.replaceAll("\n", "\\n");
+};
+
 const splitHead = (
 	lineInfo: LineInfo
 ): KeyValueHead | EmptyLine | ParseErr => {
-	const { line } = lineInfo.lineInfo;
+	const { line, lineNumber } = lineInfo.lineInfo;
 
+	// case: empty line
 	if (line === "" || line === ":") {
 		return {
 			type: "EmptyLine",
@@ -130,44 +139,69 @@ const splitHead = (
 		};
 	}
 
+	// split line into keyHead and valueHead
 	const parts = line.split(": ").map(s => s.trim());
+	log("Parts:", parts);
 
-	if (parts.length === 2) {
-		const [keyHead, valueHead] = parts;
-		if (keyHead === undefined || valueHead == undefined) {
-			throw Error("Never");
-		}
-		return {
-			type: "KeyValueHead",
-			keyHead,
-			valueHead,
-			...setLineColumn(lineInfo, 5),
-		};
-	}
-
-	const message =
-		parts.length === 0
-			? "Key is missing assignment colon."
-			: "Line has multiple assigment colons.";
-
-	return {
-		type: "ParseErr",
-		message,
-		...lineInfo,
+	// create ParseErr error Object
+	const getParseErr = (message: string): ParseErr => {
+		return { type: "ParseErr", message, ...lineInfo };
 	};
-};
 
-export const logPushArray = () => {
-	const things: string[] = [];
+	// Error messages
+	const missingColonErr = "Key is missing assignment colon.";
+	const colonNeedsSpaceErr =
+		"There must be space between " +
+		"key assignment colon and value.";
+	const confusingColon =
+		"Cannot discern placement of assignment colon.";
 
-	for (let i = 0; i < 10; i++) {
-		log(`array length: ${things.length}`);
-		log(`push: ${i}`);
-		things.push(i.toString());
+	// switch on keyHead and valueHead parts
+	switch (parts.length) {
+		// case: "key: value" => OK
+		case 2: {
+			const [keyHead, valueHead] = parts;
+			if (keyHead === undefined || valueHead == undefined) {
+				throw Error("Never");
+			}
+			return {
+				type: "KeyValueHead",
+				keyHead,
+				valueHead,
+				...lineInfo,
+			};
+		}
+		// case: "key" or "key:" or "key:value" or "key:key:value..."
+		case 1: {
+			const colonCount = countOccurencesOf(line, ":");
+			switch (colonCount) {
+				case 0:
+					// case: "key" => ERR
+					return getParseErr(missingColonErr);
+
+				case 1:
+					// case: "key:" => OK
+					if (line.endsWith(":")) {
+						return {
+							type: "KeyValueHead",
+							keyHead: line.replace(":", ""),
+							valueHead: "",
+							...lineInfo,
+						};
+					}
+					// case: "key:value" => ERR
+					return getParseErr(colonNeedsSpaceErr);
+
+				// "key:key:value..." => ERR
+				default:
+					return getParseErr(confusingColon);
+			}
+		}
+		// case: "key: key: value" => ERR
+		default: {
+			return getParseErr(confusingColon);
+		}
 	}
-	log(`array length: ${things.length}`);
-	logln(40);
-	log(things);
 };
 
 export const logSplitHeads = async () => {
@@ -181,24 +215,29 @@ export const logSplitHeads = async () => {
 	const logLineInfo = (li: LineInfo) => {
 		const { line, lineNumber, indent } = li.lineInfo;
 		log(
-			`   (${lineNumber}), indent: ${indent}, ` + `line: "${line}"`
+			`   (line#${lineNumber}), indent: ${indent}, ` +
+				`line: "${formatLine(line)}"`
 		);
 	};
 	const logError = (err: ParseErr) => {
-		log(`ParseErr: (${errors.length}): "${err.message}"`);
+		log(`PARSE-ERR: (${errors.length}): "${err.message}"`);
 		logLineInfo(err as LineInfo);
 		logln(40);
 	};
 
 	let lineNumber = 1;
 	for await (const line of file.readLines()) {
+		log(`ORG LINE(#${lineNumber}): ` + `"${formatLine(line)}"`);
+
 		const res1 = getPreLineInfo(line, lineNumber);
+
 		if (res1.type === "ParseErr") {
 			const err = res1;
 			errors.push(res1);
 			logError(err);
 			continue;
 		}
+
 		const lineInfo: LineInfo = {
 			lineInfo: {
 				line: res1.line,

@@ -1,6 +1,5 @@
 import {
 	logParserLines,
-	logPushArray,
 	logSplitHeads,
 } from "@/actions/parser/parser-start";
 import { log, logh, logln } from "@/utils/log";
