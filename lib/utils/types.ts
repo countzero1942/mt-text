@@ -146,3 +146,7 @@ export const compareTypeAndClassName = (
 export const isDefined = <T>(obj: T | undefined): obj is T => {
 	return obj !== undefined;
 };
+
+export const exhaustiveGuard = (_: never): never => {
+	throw Error("Never");
+};
