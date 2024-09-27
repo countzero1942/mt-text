@@ -143,10 +143,77 @@ export const compareTypeAndClassName = (
 	};
 };
 
+/**
+ * Can be used with array.filter to filter out undefined members
+ * Can also be used to narrow an array's type in a filter function.
+ *
+ * @param obj This is typically the element of an array
+ * during a filter callback
+ * @returns The 'obj' cast as T if it is defined.
+ */
 export const isDefined = <T>(obj: T | undefined): obj is T => {
 	return obj !== undefined;
 };
 
+/**
+ * This method can be called in the 'default' case of a switch
+ * that matches the discriminated key-value in a discriminated
+ * union to ensure each type is implemented.
+ */
 export const exhaustiveGuard = (_: never): never => {
 	throw Error("Never");
+};
+
+/**
+ * These are the keys to methods that mutate the contents
+ * of an array. They are removed in FixedLengthArray of T, L
+ */
+export type ArrayLengthMutationKeys =
+	| "splice"
+	| "push"
+	| "pop"
+	| "shift"
+	| "unshift";
+
+/**
+ * Casts a dynamic array as a fixed-length const readonly array
+ *
+ * @param T The array element type
+ * @param L The length of the fixed array: a literal number type
+ */
+export type FixedLengthArray<
+	T,
+	L extends number,
+	TObj = L extends 2
+		? [T, T, ...ReadonlyArray<T>]
+		: L extends 3
+		? [T, T, T, ...ReadonlyArray<T>]
+		: L extends 4
+		? [T, T, T, T, ...ReadonlyArray<T>]
+		: L extends 5
+		? [T, T, T, T, T, ...ReadonlyArray<T>]
+		: [T, ...ReadonlyArray<T>]
+> = Pick<TObj, Exclude<keyof TObj, ArrayLengthMutationKeys>> & {
+	readonly length: L;
+	readonly [I: number]: T;
+	[Symbol.iterator]: () => IterableIterator<T>;
+};
+
+/**
+ * Casts a dynamic array to a fixed array based on its length.
+ * This is to narrows the type in the destructured tuple,
+ * eliminating the '| undefined' part.
+ * @param arr The array to cast
+ * @param length The length to cast the array to
+ * @returns The array cast to FixedLengthArray type
+ */
+export const toFixedArray = <
+	L extends number,
+	TArray extends readonly any[],
+	T extends TArray[number]
+>(
+	arr: TArray,
+	length: L
+) => {
+	return arr as unknown as FixedLengthArray<T, L>;
 };

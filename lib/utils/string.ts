@@ -62,3 +62,28 @@ export const countOccurencesOf = (
 	}
 	return count;
 };
+
+/**
+ * Splits a string only once, instead of many times
+ * with the built in 'split' funciton.
+ *
+ * @param source The string to split
+ * @param split The splitter
+ * @returns The readonly array of 2 split strings if splitter
+ * found, or 1 string of the original 'source'
+ */
+export const splitStringOnce = (source: string, split: string) => {
+	// abc: def
+	// 01234567
+
+	const i = source.indexOf(split);
+	if (i >= 0) {
+		const left = source.slice(0, i);
+		const right = source.slice(i + split.length);
+		const arr: ReadonlyArray<string> = [left, right];
+		return arr;
+	} else {
+		const arr: ReadonlyArray<string> = [source];
+		return arr;
+	}
+};
