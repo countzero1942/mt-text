@@ -1,127 +1,22 @@
 "use server";
 
-import { logh, logln } from "@/utils/log";
+import { log, logh, logln } from "@/utils/log";
 import { countOccurencesOf, splitStringOnce } from "@/utils/string";
 import {
 	exhaustiveGuard,
 	isDefined,
 	toFixedArray,
 } from "@/utils/types";
-import RenderFromTemplateContext from "next/dist/client/components/render-from-template-context";
-import { NextServer } from "next/dist/server/next";
-import { log } from "node:console";
 import { open } from "node:fs/promises";
+import {
+	EmptyLine,
+	LineInfo,
+	ParseErr,
+} from "@/parser/types/general";
+import { getPreLineInfo } from "@/parser/utils/pre-line-info";
+import { splitHead } from "@/parser/utils/split-head";
 
 const getTextFile = (name: string) => `./text/parser/${name}`;
-
-type PreLineInfo = {
-	readonly type: "PreLineInfo";
-	readonly content: string;
-	readonly indent: number;
-	readonly row: number;
-};
-
-type LineInfo = {
-	readonly lineInfo: {
-		readonly content: string;
-		readonly indent: number;
-		readonly row: number;
-		readonly column?: number;
-	};
-};
-
-type EmptyLine = Simplify<
-	{
-		readonly type: "EmptyLine";
-	} & LineInfo
->;
-
-type KeyValueHead = Simplify<
-	{
-		readonly type: "KeyValueHead";
-		readonly keyHead: string;
-		readonly valueHead: string;
-	} & LineInfo
->;
-
-type KeyHead = Simplify<
-	{
-		readonly type: "KeyHead";
-		readonly keyHead: string;
-	} & LineInfo
->;
-
-type KeyBodyHead = Simplify<
-	{
-		readonly type: "KeyBodyHead";
-		readonly keyHead: string;
-	} & LineInfo
->;
-
-type ParseErr = Simplify<
-	{
-		readonly type: "ParseErr";
-		readonly message: string;
-	} & LineInfo
->;
-
-type TabsAndContent = {
-	tabs: number;
-	content: string;
-};
-
-const getTabsAndContent = (line: string): TabsAndContent => {
-	const tabRegEx = /^(?<tabs>\t+)?(?<content>.*)/g;
-	type TabContentGroups =
-		| {
-				tabs?: string;
-				content?: string;
-		  }
-		| undefined;
-	const res = tabRegEx.exec(line);
-
-	const groups: TabContentGroups = res?.groups;
-
-	return {
-		tabs: groups?.tabs?.length ?? 0,
-		content: groups?.content ?? "",
-	};
-};
-
-const getPreLineInfo = (
-	line: string,
-	lineNumber: number
-): PreLineInfo | ParseErr => {
-	const getSpaceError = (): ParseErr => {
-		return {
-			type: "ParseErr",
-			message: "Spaces cannot be used to indent lines, only tabs.",
-			lineInfo: {
-				indent: 0,
-				content: line,
-				row: lineNumber,
-			},
-		};
-	};
-
-	if (line.startsWith(" ")) {
-		return getSpaceError();
-	}
-
-	const { tabs, content } = getTabsAndContent(line.trimEnd());
-
-	if (content.startsWith(" ")) {
-		return getSpaceError();
-	}
-
-	const preLineInfo: PreLineInfo = {
-		type: "PreLineInfo",
-		content,
-		indent: tabs,
-		row: lineNumber,
-	};
-	return preLineInfo;
-};
 
 const setLineColumn = (
 	lineInfo: LineInfo,
@@ -140,77 +35,6 @@ const formatLine = (line: string) => {
 		.replaceAll("\t", "\\t")
 		.replaceAll("\r", "\\r")
 		.replaceAll("\n", "\\n");
-};
-
-const splitHead = (
-	lineInfo: LineInfo
-): KeyValueHead | KeyHead | KeyBodyHead | EmptyLine | ParseErr => {
-	const { content: line, row: lineNumber } = lineInfo.lineInfo;
-
-	// case: empty line
-	if (line === "" || line === ":") {
-		return {
-			type: "EmptyLine",
-			...lineInfo,
-		};
-	}
-
-	// split line into keyHead and valueHead
-	const parts = line.split(": ", 2).map(s => s.trim());
-	log("   Parts:", parts);
-
-	// create ParseErr error Object
-	const getParseErr = (message: string): ParseErr => {
-		return { type: "ParseErr", message, ...lineInfo };
-	};
-
-	// Error messages
-	const confusingColon =
-		"Cannot discern placement of key assignment colon. Must be ': '.";
-
-	// switch on keyHead and valueHead parts
-	switch (parts.length) {
-		// case: "key: value", "key: value: value" => KeyValue Decl
-		case 2: {
-			const [keyHead, valueHead] = parts;
-			if (keyHead === undefined || valueHead == undefined) {
-				throw Error("Never");
-			}
-			return {
-				type: "KeyValueHead",
-				keyHead,
-				valueHead,
-				...lineInfo,
-			};
-		}
-		// case: "key", "key:", "key:value", "key:key:value..."
-		case 1: {
-			const colonCount = countOccurencesOf(line, ":");
-			switch (colonCount) {
-				case 0:
-					// case: "key" => Key Declaration
-					return {
-						type: "KeyHead",
-						keyHead: line,
-						...lineInfo,
-					};
-
-				default:
-					// case: "key:" "key: stuff:8:" => Key Body Decl
-					if (line.endsWith(":")) {
-						return {
-							type: "KeyBodyHead",
-							keyHead: line.slice(0, -1),
-							...lineInfo,
-						};
-					}
-					// case: "key:key:value", ... => ERR
-					return getParseErr(confusingColon);
-			}
-		}
-		default:
-			throw Error("Never");
-	}
 };
 
 export const logSplitHeads = async () => {

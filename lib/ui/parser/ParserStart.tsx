@@ -16,7 +16,7 @@ import { testGetKeysAndValuesWithFuncs } from "@/actions/type-fun/one-of-interfa
 export default async function ParserStart() {
 	//	await logParserLines();
 	// logPushArray();
-	// await logSplitHeads();
+	await logSplitHeads();
 
 	await new Promise(resolve => setTimeout(resolve, 100));
 	// testGetKeysAndValuesWithFuncs();
