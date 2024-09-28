@@ -12,9 +12,14 @@ import { log } from "@/utils/log";
 import { countOccurencesOf, splitStringOnce } from "@/utils/string";
 import { toFixedArray } from "@/utils/types";
 
-export const splitHead = (
-	lineInfo: LineInfo
-): KeyValueHead | KeyHead | KeyBodyHead | EmptyLine | ParseErr => {
+export type HeadType =
+	| KeyValueHead
+	| KeyHead
+	| KeyBodyHead
+	| EmptyLine
+	| ParseErr;
+
+export const splitHead = (lineInfo: LineInfo): HeadType => {
 	const { content: line, row: lineNumber } = lineInfo.lineInfo;
 
 	// case: empty line
@@ -26,10 +31,7 @@ export const splitHead = (
 	}
 
 	// split line into keyHead and valueHead
-	//	const parts = line.split(": ", 2).map(s => s.trim());
-
 	const parts = splitStringOnce(line, ": ").map(s => s.trim());
-	log("   Parts:", parts);
 
 	// create ParseErr error Object
 	const getParseErr = (message: string): ParseErr => {

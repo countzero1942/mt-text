@@ -1,5 +1,5 @@
-a: some text
-a2:
+a: some text 
+a2: 	
 a2 stuff:8: 
 a2 stuff:8:2: 
 a2 in .trait: 
@@ -14,6 +14,11 @@ b: 42
 b: 42 
 	b: 42  
 :
+	:
+		:
+
+
+		
 c: -43,555,348
 	c2: -43,555,348
 		c2: -43,555,348

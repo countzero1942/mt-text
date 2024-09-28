@@ -1,6 +1,7 @@
 import {
 	logParserLines,
 	logSplitHeads,
+	logTestError,
 } from "@/actions/parser/parser-start";
 import { log, logh, logln } from "@/utils/log";
 import {
@@ -16,7 +17,8 @@ import { testGetKeysAndValuesWithFuncs } from "@/actions/type-fun/one-of-interfa
 export default async function ParserStart() {
 	//	await logParserLines();
 	// logPushArray();
-	await logSplitHeads();
+	// await logSplitHeads();
+	logTestError();
 
 	await new Promise(resolve => setTimeout(resolve, 100));
 	// testGetKeysAndValuesWithFuncs();

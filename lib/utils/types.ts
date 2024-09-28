@@ -10,14 +10,6 @@ const getPrototype = (item: any) => {
 export const getClassName = (item: Object) => item.constructor.name;
 
 /**
- * Puts together the Error.name and Error.message
- * @param item The Error object.
- * @returns The error message.
- */
-export const getErrorMessage = (item: Error) =>
-	`${item.name}: '${item.message}'`;
-
-/**
  * Gets the Type name of an object. The return type covers
  * most Type name cases. But can cast as string to compare
  * those not listed in the Union.

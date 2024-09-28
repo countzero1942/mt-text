@@ -7,15 +7,24 @@ export type LineInfo = {
 	};
 };
 
-export type EmptyLine = Simplify<
-	{
-		readonly type: "EmptyLine";
-	} & LineInfo
->;
+export type EmptyLine = {
+	readonly type: "EmptyLine";
+} & LineInfo;
 
-export type ParseErr = Simplify<
-	{
-		readonly type: "ParseErr";
-		readonly message: string;
-	} & LineInfo
->;
+export type ParseErr = {
+	readonly type: "ParseErr";
+	readonly message: string;
+} & LineInfo;
+
+// export type EmptyLine = Simplify<
+// 	{
+// 		readonly type: "EmptyLine";
+// 	} & LineInfo
+// >;
+
+// export type ParseErr = Simplify<
+// 	{
+// 		readonly type: "ParseErr";
+// 		readonly message: string;
+// 	} & LineInfo
+// >;
