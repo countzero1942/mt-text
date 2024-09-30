@@ -72,7 +72,10 @@ export const countOccurencesOf = (
  * @returns The readonly array of 2 split strings if splitter
  * found, or 1 string of the original 'source'
  */
-export const splitStringOnce = (source: string, split: string) => {
+export const splitStringOnce = (
+	source: string,
+	split: string
+): readonly string[] => {
 	// abc: def
 	// 01234567
 
@@ -80,10 +83,10 @@ export const splitStringOnce = (source: string, split: string) => {
 	if (i >= 0) {
 		const left = source.slice(0, i);
 		const right = source.slice(i + split.length);
-		const arr: ReadonlyArray<string> = [left, right];
+		const arr = [left, right];
 		return arr;
 	} else {
-		const arr: ReadonlyArray<string> = [source];
+		const arr = [source];
 		return arr;
 	}
 };

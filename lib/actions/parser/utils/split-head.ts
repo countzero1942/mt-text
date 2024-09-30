@@ -20,7 +20,7 @@ export type HeadType =
 	| ParseErr;
 
 export const splitHead = (lineInfo: LineInfo): HeadType => {
-	const { content: line, row: lineNumber } = lineInfo.lineInfo;
+	const { content: line } = lineInfo.lineInfo;
 
 	// case: empty line
 	if (line === "" || line === ":") {
@@ -31,16 +31,18 @@ export const splitHead = (lineInfo: LineInfo): HeadType => {
 	}
 
 	// split line into keyHead and valueHead
-	const parts = splitStringOnce(line, ": ").map(s => s.trim());
+	const parts: readonly string[] = splitStringOnce(line, ": ").map(
+		s => s.trim()
+	);
 
 	// create ParseErr error Object
-	const getParseErr = (message: string): ParseErr => {
+	const createParseErr = (message: string): ParseErr => {
 		return { type: "ParseErr", message, ...lineInfo };
 	};
 
 	// Error messages
 	const confusingColon =
-		"Cannot discern placement of key assignment colon. Must be ': '.";
+		"Cannot discern key assignment colon. Must be ': '.";
 
 	// switch on keyHead and valueHead parts
 	switch (parts.length) {
@@ -77,7 +79,7 @@ export const splitHead = (lineInfo: LineInfo): HeadType => {
 						};
 					}
 					// case: "key:key:value", ... => ERR
-					return getParseErr(confusingColon);
+					return createParseErr(confusingColon);
 			}
 		}
 		default:

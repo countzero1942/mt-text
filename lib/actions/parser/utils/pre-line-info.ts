@@ -1,4 +1,5 @@
 import { ParseErr } from "@/parser/types/general";
+import { log } from "console";
 
 export type PreLineInfo = {
 	readonly type: "PreLineInfo";
@@ -13,6 +14,10 @@ type TabsAndContent = {
 };
 
 const getTabsAndContent = (line: string): TabsAndContent => {
+	// Note: due to Regex limits, 'content' picks up
+	// tabs on empty line, so they won't be counted.
+	// But it shouldn't matter
+
 	const tabRegEx = /^(?<tabs>\t+)?(?<content>.*)/g;
 	type TabContentGroups =
 		| {
